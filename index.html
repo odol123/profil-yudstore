@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yudstore — Jasa Pembuatan Website</title>
+<meta name="description" content="Yudstore membuat website sederhana, cepat, dan rapi untuk usaha kecil dan personal." />
+<meta name="theme-color" content="#0b0d1a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__sun"></div>
+  <canvas class="bg__sakura" id="sakura"></canvas>
+  <div class="bg__vignette"></div>
+</div>
+
+<header class="dock" id="nav">
+  <nav class="dock__bar" aria-label="Navigasi utama">
+    <span class="dock__liquid" id="dockLiquid" aria-hidden="true"></span>
+
+    <a class="dock__item is-active" href="#top" data-nav aria-current="page">
+      <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M5.5 9.5V20h13V9.5" />
+        <path d="M10 20v-5h4v5" />
+      </svg>
+      <span class="dock__label">Beranda</span>
+    </a>
+
+    <a class="dock__item" href="#layanan" data-nav>
+      <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="7" height="7" rx="2" />
+        <rect x="13.5" y="3.5" width="7" height="7" rx="2" />
+        <rect x="3.5" y="13.5" width="7" height="7" rx="2" />
+        <rect x="13.5" y="13.5" width="7" height="7" rx="2" />
+      </svg>
+      <span class="dock__label">Layanan</span>
+    </a>
+
+    <a class="dock__item" href="#karya" data-nav>
+      <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+        <circle cx="9" cy="10" r="1.6" />
+        <path d="M4 16.5l4.5-4 4 3.5 3-2.5 4 3.5" />
+      </svg>
+      <span class="dock__label">Karya</span>
+    </a>
+
+    <a class="dock__item" href="#kontak" data-nav>
+      <svg class="dock__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.5 12.5c0 4-3.8 7-8.5 7-1 0-2-.15-2.9-.42L4.5 20.5l1.1-3.2C4.6 16.1 3.5 14.4 3.5 12.5c0-4 3.8-7 8.5-7s8.5 3 8.5 7z" />
+        <path d="M8.5 12.5h.01M12 12.5h.01M15.5 12.5h.01" />
+      </svg>
+      <span class="dock__label">Hubungi</span>
+    </a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="torii" aria-hidden="true">
+      <span class="torii__ground"></span>
+      <span class="torii__pillar torii__pillar--left"></span>
+      <span class="torii__pillar torii__pillar--right"></span>
+      <span class="torii__base torii__base--left"></span>
+      <span class="torii__base torii__base--right"></span>
+      <span class="torii__nuki"></span>
+      <span class="torii__gakuzuka"></span>
+      <span class="torii__shimaki"></span>
+      <span class="torii__kasagi"></span>
+    </div>
+
+    <div class="hero__content glass">
+      <p class="eyebrow">Jasa Pembuatan Website</p>
+      <h1>Website sederhana,<br />dibuat dengan rapi.</h1>
+      <p class="hero__lead">
+        Yudstore membuat website untuk usaha kecil dan personal.
+        Ringan, cepat dibuka, dan mudah dipakai.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#kontak">Hubungi Saya</a>
+        <a class="btn btn--glass" href="#karya">Lihat Karya</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="layanan">
+    <div class="section__head">
+      <p class="eyebrow">Layanan</p>
+      <h2>Apa yang saya kerjakan</h2>
+    </div>
+
+    <div class="about">
+      <article class="card glass">
+        <h3>Landing Page</h3>
+        <p>Satu halaman untuk memperkenalkan usaha Anda, lengkap dengan tombol kontak.</p>
+      </article>
+      <article class="card glass">
+        <h3>Website Portofolio</h3>
+        <p>Menampilkan karya, foto, atau produk Anda dengan tata letak yang bersih.</p>
+      </article>
+      <article class="card glass">
+        <h3>Perbaikan &amp; Update</h3>
+        <p>Merapikan website lama, memperbaiki tampilan, atau menambah halaman baru.</p>
+      </article>
+    </div>
+
+    <p class="disclaimer glass">
+      <svg class="disclaimer__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8h.01M11 12h1v4h1" />
+      </svg>
+      <span>Semua website di Yudstore dibuat dengan bantuan AI, lalu ditinjau dan disesuaikan secara manual.</span>
+    </p>
+  </section>
+
+  <section class="section" id="karya">
+    <div class="section__head">
+      <p class="eyebrow">Karya</p>
+      <h2>Contoh pekerjaan</h2>
+    </div>
+
+    <div class="work">
+      <a class="work__item glass" href="https://yudstore-top-up.vercel.app/" target="_blank" rel="noopener" aria-label="Buka website Top Up Game (tab baru)">
+        <div class="work__thumb work__thumb--a work__thumb--img"><img src="images/topup-game.jpg" alt="Tampilan website Top Up Game" loading="lazy"></div>
+        <div class="work__body">
+          <h3>Top Up Game</h3>
+          <p>Website Top-Up yang simpel dan minimalis.</p>
+        </div>
+      </a>
+      <a class="work__item glass" href="https://yudstore-game.vercel.app/" target="_blank" rel="noopener" aria-label="Buka website Store Game (tab baru)">
+        <div class="work__thumb work__thumb--b work__thumb--img"><img src="images/store-game.jpg" alt="Tampilan website Store Game" loading="lazy"></div>
+        <div class="work__body">
+          <h3>Store Game</h3>
+          <p>Untuk store akun game dll.</p>
+        </div>
+      </a>
+      <a class="work__item glass" href="https://yudstore-kopi.vercel.app/" target="_blank" rel="noopener" aria-label="Buka website UMKM Sederhana (tab baru)">
+        <div class="work__thumb work__thumb--c work__thumb--img"><img src="images/kopi.jpg" alt="Tampilan website UMKM Sederhana" loading="lazy"></div>
+        <div class="work__body">
+          <h3>UMKM Sederhana</h3>
+          <p>Website umkm sederhana yang menarik.</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="kontak">
+    <div class="contact glass">
+      <div class="contact__intro">
+        <p class="eyebrow">Kontak</p>
+        <h2>Ceritakan proyek Anda</h2>
+        <p>Saya membalas dalam 1×24 jam pada hari kerja.</p>
+        <a class="contact__wa" href="https://wa.me/6289529422727" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.5 20.5l1.3-4.1A8.4 8.4 0 1 1 8 19.2z" />
+            <path d="M9 8.8c.3-.6.6-.6.9-.6h.5c.2 0 .4 0 .6.5l.7 1.6c.1.3 0 .5-.1.7l-.5.6c-.1.2-.2.3 0 .6.4.7 1 1.3 1.7 1.7.3.2.4.1.6-.1l.6-.6c.2-.2.4-.2.6-.1l1.6.8c.4.2.4.4.4.6 0 .3-.3 1.2-.8 1.5-.5.3-1.4.5-3.2-.4a9 9 0 0 1-3.8-3.9c-.4-.9-.6-1.6-.6-2.2 0-.6.3-1 .6-1.3z" />
+          </svg>
+          <span>Chat WhatsApp</span>
+        </a>
+      </div>
+
+      <form class="contact__form" id="contactForm" novalidate>
+        <div class="field">
+          <label for="nama">Nama</label>
+          <input id="nama" name="nama" type="text" placeholder="Nama Anda" required />
+        </div>
+        <div class="field">
+          <label for="telepon">Nomor WhatsApp</label>
+          <input id="telepon" name="telepon" type="tel" inputmode="tel" placeholder="0895 2942 2727" required />
+        </div>
+        <div class="field">
+          <label for="pesan">Pesan</label>
+          <textarea id="pesan" name="pesan" rows="4" placeholder="Ceritakan proyek Anda…" required></textarea>
+        </div>
+        <button class="btn btn--primary btn--block" type="submit">Kirim via WhatsApp</button>
+        <p class="contact__note" id="formNote" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner glass">
+    <span class="footer__brand">Yudstore</span>
+    <p class="footer__copy">&copy; <span id="year">2026</span> Yudstore</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

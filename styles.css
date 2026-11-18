@@ -1,0 +1,839 @@
+/* =========================================================
+   Yudstore — versi ringan
+   Tema Jepang, gerbang torii, efek kaca buram
+   ========================================================= */
+
+:root {
+  --night:      #06070f;
+  --indigo:     #0e1130;
+  --torii:      #d93a2b;
+  --torii-lite: #ff6a4d;
+  --torii-deep: #8e1c14;
+  --gold:       #f2b53c;
+  --cream:      #f7f1e8;
+  --muted:      rgba(247, 241, 232, 0.66);
+  --faint:      rgba(247, 241, 232, 0.44);
+
+  --glass-bg:   rgba(255, 255, 255, 0.07);
+  --glass-brd:  rgba(255, 255, 255, 0.16);
+  --blur:       12px;
+
+  --font-display: "Shippori Mincho B1", Georgia, serif;
+  --font-body:    "Zen Kaku Gothic New", system-ui, sans-serif;
+
+  --radius: 18px;
+  --shell:  min(1080px, 92vw);
+  --ease:   cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+* , *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: clamp(15px, 0.5vw + 13.7px, 17px);
+  line-height: 1.7;
+  color: var(--cream);
+  background: var(--night);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* Hilangkan kilau/highlight biru saat elemen di-tap atau di-klik di mobile */
+  -webkit-tap-highlight-color: transparent;
+  /* Teks di layar tidak bisa disalin/diseleksi */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+svg, canvas { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; color: inherit; }
+
+/* Kolom isian tetap bisa disalin agar nyaman dipakai */
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* =========================================================
+   LATAR
+   ========================================================= */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(100% 70% at 78% 8%, rgba(242, 181, 60, 0.18), transparent 58%),
+    radial-gradient(90% 70% at 10% 10%, rgba(217, 58, 43, 0.14), transparent 60%),
+    linear-gradient(180deg, #05060e 0%, #0b0e26 48%, #16123a 100%);
+}
+
+.bg__sun {
+  position: absolute;
+  top: 8vh;
+  right: 12vw;
+  width: min(34vw, 380px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 217, 138, 0.9) 0%,
+    rgba(242, 181, 60, 0.6) 36%,
+    rgba(217, 58, 43, 0.2) 60%,
+    transparent 74%);
+  opacity: 0.7;
+}
+
+.bg__sakura { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.bg__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 48%, rgba(4, 5, 12, 0.72) 100%);
+}
+
+/* =========================================================
+   KACA BURAM
+   ========================================================= */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius);
+  backdrop-filter: blur(var(--blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
+  box-shadow: 0 18px 44px -26px rgba(0, 0, 0, 0.85);
+}
+
+/* =========================================================
+   NAVIGASI — LIQUID GLASS DOCK
+   ========================================================= */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom, 16px));
+  translate: -50% 0;
+  z-index: 60;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  animation: dock-in 0.7s var(--ease) both 0.1s;
+}
+
+@keyframes dock-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Badan kapsul kaca */
+.dock__bar {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 7px;
+  border-radius: 999px;
+  background: rgba(10, 11, 18, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
+    0 -1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 44px -20px rgba(0, 0, 0, 0.9),
+    0 0 40px -22px rgba(120, 170, 255, 0.5);
+}
+
+/* Butiran kaca halus di permukaan dock */
+.dock__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ---------- Gelembung liquid glass yang bergerak ---------- */
+.dock__liquid {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  height: calc(100% - 14px);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  /* Durasi transform dan width disamakan dan tanpa overshoot supaya gelembung
+     tidak "melompat" saat menu diklik beruntun dengan cepat. */
+  transition:
+    transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    width 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.3s ease;
+  will-change: transform, width;
+  backface-visibility: hidden;
+  background:
+    radial-gradient(120% 130% at 30% 15%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.12) 42%, transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.07));
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.65) inset,
+    0 -8px 16px -8px rgba(255, 255, 255, 0.35) inset,
+    0 8px 22px -10px rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px) saturate(200%);
+  -webkit-backdrop-filter: blur(6px) saturate(200%);
+}
+.dock__liquid.is-ready { opacity: 1; }
+/* Saat menu diklik beruntun, matikan transisi sementara agar posisi
+   langsung menempel tanpa animasi yang saling menimpa. */
+.dock__liquid.is-snap {
+  transition: none;
+}
+
+/* Tepi pembiasan + distorsi warna pelangi (chromatic aberration) */
+.dock__liquid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: conic-gradient(from 210deg,
+    rgba(255, 120, 200, 0.9),
+    rgba(120, 200, 255, 0.9),
+    rgba(160, 255, 200, 0.85),
+    rgba(255, 220, 130, 0.9),
+    rgba(255, 120, 200, 0.9));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.6;
+  filter: blur(0.4px);
+}
+/* Kilau refleksi atas pada gelembung */
+.dock__liquid::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 3px;
+  height: 38%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), transparent);
+  filter: blur(2px);
+  opacity: 0.7;
+}
+
+/* Denyut halus saat menu diklik */
+.dock__liquid.is-pulse { animation: liquid-pulse 0.5s var(--ease); }
+@keyframes liquid-pulse {
+  0%   { filter: brightness(1); }
+  40%  { filter: brightness(1.45); }
+  100% { filter: brightness(1); }
+}
+
+/* ---------- Item menu ---------- */
+.dock__item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 74px;
+  padding: 9px 14px 8px;
+  border-radius: 999px;
+  color: rgba(226, 230, 240, 0.62);
+  transition: color 0.3s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.dock__item:hover { color: rgba(240, 244, 252, 0.9); }
+.dock__item.is-active { color: #fff; }
+
+.dock__icon {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.35s var(--ease), filter 0.35s;
+}
+.dock__item.is-active .dock__icon {
+  transform: translateY(-1px) scale(1.06);
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+}
+.dock__item:hover .dock__icon { transform: translateY(-2px) scale(1.05); }
+
+.dock__label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Cahaya lembut saat hover */
+.dock__item::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 999px;
+  background: radial-gradient(70% 70% at 50% 30%, rgba(255, 255, 255, 0.16), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+.dock__item:hover::before { opacity: 1; }
+
+/* =========================================================
+   TOMBOL
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.28s var(--ease), box-shadow 0.28s, background 0.28s, border-color 0.28s;
+}
+.btn--primary {
+  color: #fff;
+  background: linear-gradient(140deg, var(--torii-lite), var(--torii) 52%, var(--torii-deep));
+  box-shadow: 0 12px 28px -14px rgba(217, 58, 43, 0.9);
+}
+.btn--primary:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -14px rgba(255, 106, 77, 0.9); }
+.btn--glass {
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-brd);
+}
+.btn--glass:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.15); }
+.btn--block { width: 100%; }
+
+/* =========================================================
+   GERBANG TORII (gaya Inari: balok atas hitam, tiang merah)
+   ========================================================= */
+.torii {
+  position: absolute;
+  top: 6vh;
+  left: 50%;
+  translate: -50% 0;
+  width: min(880px, 92vw);
+  height: min(66vh, 540px);
+  pointer-events: none;
+  /* Tinggi tiap balok dipakai bersama agar balok-balok bertumpuk rapat
+     tanpa celah dan tiang bisa berhenti tepat di bawah balok. */
+  --kasagi-h:  clamp(26px, 3.3vw, 42px);
+  --shimaki-h: clamp(16px, 1.9vw, 24px);
+  --nuki-h:    clamp(14px, 1.7vw, 21px);
+  --nuki-top:  27%;
+  /* Warna kayu dan kayu hitam (lacquer) */
+  --wood: linear-gradient(90deg,
+    var(--torii-deep) 0%, var(--torii) 26%, var(--torii-lite) 50%,
+    var(--torii) 74%, var(--torii-deep) 100%);
+  --lacquer: linear-gradient(180deg,
+    #4a4f5c 0%, #2b2f3a 34%, #14161e 70%, #0b0d13 100%);
+}
+
+/* Bayangan di tanah */
+.torii__ground {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  translate: -50% 0;
+  width: 86%;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent 78%);
+  filter: blur(9px);
+}
+
+/* ---------- Tiang (hashira): menopang balok, sedikit meruncing ke atas ---------- */
+.torii__pillar {
+  position: absolute;
+  top: calc(var(--kasagi-h) + var(--shimaki-h));
+  bottom: 14px;
+  width: clamp(26px, 3.4vw, 44px);
+  background: var(--wood);
+  border-radius: 5px 5px 3px 3px;
+  clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%);
+  box-shadow:
+    inset -6px 0 12px -6px rgba(0, 0, 0, 0.55),
+    inset 6px 0 12px -6px rgba(0, 0, 0, 0.35),
+    0 0 26px -8px rgba(255, 106, 77, 0.55);
+}
+/* Bayangan tempat tiang bertemu balok */
+.torii__pillar::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), transparent);
+}
+.torii__pillar--left  { left: 6%; }
+.torii__pillar--right { right: 6%; }
+
+/* Batu alas tiang */
+.torii__base {
+  position: absolute;
+  bottom: 4px;
+  width: clamp(34px, 4.4vw, 56px);
+  height: 16px;
+  border-radius: 4px 4px 6px 6px;
+  background: linear-gradient(180deg, #5b5f6b, #2c2f38 60%, #191b22);
+  box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.95);
+}
+.torii__base--left  { left: calc(6% - 5px); }
+.torii__base--right { right: calc(6% - 5px); }
+
+/* ---------- Nuki: balok melintang bawah (menembus tiang) ---------- */
+.torii__nuki {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: var(--nuki-top);
+  height: var(--nuki-h);
+  border-radius: 4px;
+  background: var(--wood);
+  box-shadow:
+    0 2px 0 0 rgba(255, 255, 255, 0.14) inset,
+    0 -3px 8px -3px rgba(0, 0, 0, 0.6) inset,
+    0 12px 26px -16px rgba(0, 0, 0, 0.9);
+}
+
+/* Gakuzuka: papan pendek di tengah, mengisi celah nuki dan shimaki */
+.torii__gakuzuka {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  top: calc(var(--kasagi-h) + var(--shimaki-h));
+  height: calc(var(--nuki-top) - var(--kasagi-h) - var(--shimaki-h));
+  width: clamp(20px, 2.4vw, 32px);
+  background: linear-gradient(180deg, var(--torii), var(--torii-deep));
+  border-radius: 3px;
+}
+
+/* ---------- Shimaki: balok merah tepat di bawah kasagi ---------- */
+.torii__shimaki {
+  position: absolute;
+  left: 0.5%;
+  right: 0.5%;
+  top: var(--kasagi-h);
+  height: var(--shimaki-h);
+  border-radius: 5px;
+  background: var(--wood);
+  box-shadow:
+    0 2px 0 0 rgba(255, 255, 255, 0.16) inset,
+    0 14px 30px -18px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------- Kasagi: balok paling atas, hitam, ujung melengkung naik ---------- */
+.torii__kasagi {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--kasagi-h);
+  background: var(--lacquer);
+  border-radius: 4px;
+  /* Ujung kiri dan kanan naik seperti atap melengkung (kasagi gaya Inari) */
+  clip-path: polygon(
+    0 34%, 1.5% 16%, 3.5% 5%, 6% 0, 8.5% 10%, 11% 30%, 89% 30%, 91.5% 10%,
+    94% 0, 96.5% 5%, 98.5% 16%, 100% 34%,
+    97% 100%, 3% 100%
+  );
+  box-shadow:
+    0 2px 0 0 rgba(255, 255, 255, 0.22) inset,
+    0 -10px 20px -10px rgba(120, 170, 255, 0.35) inset,
+    0 20px 40px -22px rgba(0, 0, 0, 0.95);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  position: relative;
+  z-index: 2;
+  min-height: 92svh;
+  display: grid;
+  place-items: center;
+  padding: 120px 0 80px;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 3;
+  width: min(660px, 90vw);
+  padding: clamp(30px, 4vw, 50px);
+  border-radius: 26px;
+  text-align: center;
+  background: rgba(12, 14, 34, 0.45);
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+h1 {
+  margin-top: 18px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 5vw, 3.3rem);
+  line-height: 1.16;
+  text-wrap: balance;
+}
+
+.hero__lead {
+  margin: 18px auto 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.hero__actions {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+.section {
+  position: relative;
+  z-index: 2;
+  width: var(--shell);
+  margin-inline: auto;
+  padding: clamp(56px, 7vw, 96px) 0;
+}
+
+.section__head { margin-bottom: clamp(28px, 4vw, 44px); }
+.section__head h2 {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.2;
+}
+
+/* Layanan */
+.about {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+.card {
+  padding: 28px 26px;
+  transition: transform 0.35s var(--ease), border-color 0.35s;
+}
+.card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.28); }
+.card h3 { font-family: var(--font-display); font-size: 1.16rem; font-weight: 600; }
+.card p { margin-top: 8px; font-size: 0.93rem; color: var(--muted); font-weight: 300; }
+
+/* Karya */
+.work {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+.work__item {
+  display: block;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.38s var(--ease), border-color 0.38s;
+}
+.work__item:hover { transform: translateY(-6px); border-color: rgba(255, 255, 255, 0.28); }
+.work__thumb {
+  height: 160px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 3.6rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 0 28px rgba(255, 217, 138, 0.55);
+}
+.work__thumb--a { background: linear-gradient(150deg, #7d1f18, #2a1030 62%, #101233); }
+.work__thumb--b { background: linear-gradient(150deg, #123a52, #1c1440 58%, #2a1030); }
+.work__thumb--c { background: linear-gradient(150deg, #3f2a0f, #1a1338 58%, #0d1030); }
+.work__thumb--img { overflow: hidden; }
+.work__thumb--img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.work__body { padding: 20px 22px 22px; }
+.work__body h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+.work__body p { margin-top: 6px; font-size: 0.9rem; color: var(--muted); font-weight: 300; }
+
+/* =========================================================
+   KONTAK
+   ========================================================= */
+.contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(26px, 4vw, 50px);
+  padding: clamp(28px, 4vw, 48px);
+  border-radius: 26px;
+  background: rgba(12, 14, 34, 0.5);
+}
+.contact__intro h2 {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.2;
+}
+.contact__intro > p { margin-top: 14px; color: var(--muted); font-weight: 300; }
+
+/* Tombol WhatsApp */
+.contact__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 11px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #eafff3;
+  background: linear-gradient(150deg, rgba(37, 211, 102, 0.34), rgba(18, 140, 74, 0.3));
+  border: 1px solid rgba(37, 211, 102, 0.5);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px -14px rgba(37, 211, 102, 0.8);
+  transition: transform 0.28s var(--ease), background 0.28s, box-shadow 0.28s;
+}
+.contact__wa:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(150deg, rgba(37, 211, 102, 0.5), rgba(18, 140, 74, 0.42));
+  box-shadow: 0 16px 34px -14px rgba(37, 211, 102, 0.95);
+}
+.contact__wa svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Disclaimer AI di bagian Layanan */
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-top: clamp(20px, 3vw, 30px);
+  padding: 15px 19px;
+  border-radius: 16px;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+}
+.disclaimer__icon {
+  flex: none;
+  width: 19px;
+  height: 19px;
+  margin-top: 2px;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contact__form { display: grid; gap: 14px; align-content: start; }
+.field { display: grid; gap: 6px; }
+.field label {
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.field input,
+.field textarea {
+  padding: 13px 15px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-brd);
+  border-radius: 12px;
+  font-size: 0.94rem;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.field textarea { resize: vertical; min-height: 104px; }
+.field input::placeholder,
+.field textarea::placeholder { color: rgba(247, 241, 232, 0.34); }
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: rgba(255, 106, 77, 0.6);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 0 4px rgba(217, 58, 43, 0.16);
+}
+
+.contact__note {
+  min-height: 1.4em;
+  font-size: 0.86rem;
+  color: var(--gold);
+}
+.contact__note.is-error { color: #ff9a86; }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer { position: relative; z-index: 2; padding: 0 0 34px; }
+.footer__inner {
+  width: var(--shell);
+  margin-inline: auto;
+  padding: 22px 26px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.footer__brand { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; }
+.footer__copy { font-size: 0.82rem; color: var(--faint); }
+
+/* =========================================================
+   RESPONSIF
+   ========================================================= */
+@media (max-width: 820px) {
+  .torii { top: 5vh; height: min(56vh, 430px); }
+  .hero { padding-top: 110px; }
+  .dock__item { min-width: 66px; padding: 8px 11px 7px; }
+  .dock__icon { width: 20px; height: 20px; }
+}
+
+/* Layar sempit: ikon saja, label disembunyikan agar tidak bertabrakan */
+@media (max-width: 420px) {
+  .dock__bar { padding: 6px; gap: 1px; }
+  .dock__item { min-width: 0; padding: 10px 13px; gap: 0; }
+  .dock__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* Beri ruang agar dock tidak menutupi konten footer */
+.footer { padding-bottom: 108px; }
+
+@media (max-width: 760px) {
+  .contact { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .hero__actions { flex-direction: column; }
+  .hero__actions .btn { width: 100%; }
+  .bg__sun { top: 5vh; right: -8vw; width: 52vw; }
+  .work__thumb { height: 140px; }
+  .footer__inner { justify-content: center; text-align: center; }
+}
+
+/* Hormati preferensi kurangi gerak */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * , *::before , *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .bg__sakura { display: none; }
+}
+
+.work__item:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* Perbaikan layout Kontak: cegah form meluber keluar kartu */
+.contact > * { min-width: 0; }
+.contact__form { min-width: 0; }
+.field { min-width: 0; }
+.field input,
+.field textarea { display: block; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.contact__wa { max-width: 100%; white-space: nowrap; }
+.contact__wa svg { flex: none; }
+.contact__form .btn, .contact__form button { max-width: 100%; box-sizing: border-box; }
+
+/* Kontak: jumlah kolom ditentukan lebar kartu, bukan lebar layar,
+   sehingga tetap rapi di browser dengan viewport lebar/mode desktop */
+.contact {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+
+/* =========================================================
+   PATCH RESPONSIF — perbaikan overflow form kontak & footer
+   ========================================================= */
+.contact {
+  /* Kolom tidak boleh dipaksa melebar oleh isi grid. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  width: 100%;
+  min-width: 0;
+}
+.contact > *,
+.contact__intro,
+.contact__form,
+.field { min-width: 0; }
+.contact__form { width: 100%; }
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.contact__form .btn,
+.contact__form button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.contact__wa {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.contact__wa span { min-width: 0; }
+
+/* Satu kolom pada tablet dan ponsel. Aturan ini sengaja diletakkan
+   paling akhir agar tidak ditimpa aturan grid auto-fit sebelumnya. */
+@media (max-width: 760px) {
+  .contact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding: clamp(20px, 5vw, 30px);
+  }
+  .contact__intro,
+  .contact__form { width: 100%; }
+  .field input,
+  .field textarea { font-size: 16px; }
+}
+
+@media (max-width: 420px) {
+  .section { width: min(100% - 28px, 1080px); }
+  .contact { border-radius: 22px; padding: 20px 17px; }
+  .contact__intro h2 { font-size: clamp(1.45rem, 7vw, 1.8rem); }
+  .contact__wa { max-width: 100%; padding-inline: 16px; }
+  .footer__inner { width: min(100% - 28px, 1080px); }
+}
+
+/* Sisakan ruang yang cukup untuk dock navigasi tetap di bawah layar. */
+.footer { padding-bottom: max(132px, calc(112px + env(safe-area-inset-bottom, 0px))); }
